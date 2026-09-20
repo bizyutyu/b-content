@@ -1,0 +1,12 @@
+{
+  "name": "b-content",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync-firestore.mjs"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^9.2.0",
+    "gray-matter": "^4.0.3"
+  }
+}
