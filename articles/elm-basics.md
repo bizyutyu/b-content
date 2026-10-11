@@ -60,20 +60,6 @@ npx elm@0.19.3-0 init
 2. `update` に `Reset` が来たときの処理（0に戻す）を書く
 3. `view` に `Reset` を送るボタンを置く
 
-手順1だけ済ませた段階でコンパイルすると、`case` の分岐漏れが指摘される。
-
-```
--- MISSING PATTERNS ------------------------------------------------ src/Main.elm
-
-This `case` does not have branches for all possibilities:
-...
-Missing possibilities include:
-
-    Reset
-```
-
-`Msg` を先に変えれば、残りの修正箇所はコンパイラが教えてくれる。
-
 完成形は以下の通り。
 
 ```elm
@@ -83,55 +69,29 @@ import Browser
 import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
 
-
-
 -- MAIN
 
-
-main : Program () Model Msg
-main =
-    Browser.sandbox { init = init, update = update, view = view }
-
-
+main = Browser.sandbox { init = init, update = update, view = view }
 
 -- MODEL
 
-
-type alias Model =
-    Int
-
+type alias Model = Int
 
 init : Model
-init =
-    0
-
-
+init = 0
 
 -- UPDATE
 
-
-type Msg
-    = Increment
-    | Decrement
-    | Reset
-
+type Msg = Increment | Decrement | Reset
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increment ->
-            model + 1
-
-        Decrement ->
-            model - 1
-
-        Reset ->
-            init
-
-
+        Increment -> model + 1
+        Decrement -> model - 1
+        Reset -> init
 
 -- VIEW
-
 
 view : Model -> Html Msg
 view model =
@@ -139,7 +99,7 @@ view model =
         [ button [ onClick Decrement ] [ text "-" ]
         , div [] [ text (String.fromInt model) ]
         , button [ onClick Increment ] [ text "+" ]
-        , button [ onClick Reset ] [ text "Reset" ]
+        , button [ onClick Reset ] [ text "リセット" ]
         ]
 ```
 
@@ -151,7 +111,7 @@ view model =
 
 **main**
 
-`Browser.sandbox` に `init`・`update`・`view` の3つを渡すと、アプリが組み上がる。sandboxは外部との通信（HTTPや時刻など）を持たない最小構成だ。型 `Program () Model Msg` は「フラグなし（`()`）、状態は `Model`、メッセージは `Msg` のプログラム」と読む。
+`Browser.sandbox` に `init`・`update`・`view` の3つを渡すと、アプリが組み上がる。sandboxは外部との通信（HTTPや時刻など）を持たない最小構成だ。
 
 **Model**
 
@@ -191,9 +151,9 @@ Haskellを触ったことがあったので、このあたりは理解しやす�
 
 コードを書いていて詰まった点。
 
-- **タブ文字**: インデントにタブを使うと `NO TABS` エラーになる。スペースでインデントする
+- **タブ文字**: インデントにタブを使うとエラーになる。スペースでインデントする
 - **型名は大文字始まり**: 型注釈で小文字の名前を書くと、具体的な型ではなく型変数として扱われる
-- **`case` の小文字パターン**: `case` で `reset ->` のように小文字で書くと、`Reset` とのマッチではなく「何にでもマッチする変数」になる。後続の分岐には到達できなくなり、`REDUNDANT PATTERN` エラーが出る
+- **`case` の小文字パターン**: `case` で `reset ->` のように小文字で書くと、`Reset` とのマッチではなく「何にでもマッチする変数」になる。後続の分岐には到達できなくなり、エラーになる
 
 ## まとめ
 
